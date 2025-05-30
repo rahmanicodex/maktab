@@ -21,7 +21,6 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 15px;
     }
     .container,
     .admin-panel,
@@ -30,19 +29,15 @@
       background-color: rgba(255, 255, 255, 0.95);
       border-radius: 15px;
       padding: 30px;
-      width: 100%;
+      width: 90%;
       max-width: 600px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
       text-align: center;
-      box-sizing: border-box;
-      overflow-y: auto;
-      max-height: 90vh;
     }
     h1,
     h2,
     h3 {
       color: #1d3557;
-      margin-bottom: 15px;
     }
     input,
     select,
@@ -53,7 +48,6 @@
       border-radius: 10px;
       border: 1px solid #ccc;
       box-sizing: border-box;
-      font-size: 14px;
     }
     button {
       width: 100%;
@@ -62,7 +56,7 @@
       color: white;
       border: none;
       border-radius: 10px;
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s;
@@ -77,12 +71,9 @@
       background: #f8f9fa;
       border: 1px solid #ccc;
       border-radius: 8px;
-      padding: 12px 15px;
-      margin-top: 12px;
+      padding: 10px;
+      margin-top: 10px;
       text-align: right;
-      font-size: 14px;
-      line-height: 1.5;
-      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
     }
     .school-info {
       margin-top: 20px;
@@ -95,54 +86,42 @@
       margin-left: 8px;
       color: #1d3557;
     }
+    /* لینک های تلگرام و فیسبوک بدون خط و رنگ تیره */
+    .school-info a {
+      text-decoration: none;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .school-info a:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
     .user-list {
       text-align: right;
       margin-top: 20px;
     }
-    /* استایل بهبود یافته برای لیست کاربران */
     .user-item {
       background: #f1f1f1;
-      padding: 8px 12px;
+      padding: 10px;
       border-radius: 8px;
       margin-top: 10px;
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      flex-wrap: nowrap;
     }
     .user-item input {
-      padding: 6px 8px;
-      font-size: 14px;
+      margin: 0 5px;
+      flex: 1;
       border-radius: 6px;
       border: 1px solid #ccc;
-      width: 130px;
-      flex-shrink: 0;
-      direction: ltr;
-      text-align: left;
+      padding: 6px;
     }
     .user-item button {
+      flex: 0 0 auto;
+      width: auto;
       padding: 6px 12px;
-      font-size: 13px;
-      border-radius: 6px;
-      background-color: #1d3557;
-      color: white;
-      border: none;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background-color 0.3s;
-    }
-    .user-item button:hover {
-      background-color: #0d1c34;
-    }
-    /* برای فرم معلم، فیلدهای کوچکتر */
-    .teacher-panel input,
-    .teacher-panel select,
-    .teacher-panel textarea {
       font-size: 14px;
-    }
-    .teacher-panel button {
-      font-size: 15px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -154,12 +133,14 @@
       <p><i class="fas fa-phone"></i> شماره تماس: ۰۷۰۰۱۲۳۴۵۶</p>
       <p><i class="fab fa-whatsapp"></i> واتساپ: ۰۷۰۰۱۲۳۴۵۶</p>
       <p>
-        <i class="fab fa-telegram"></i> کانال تلگرام:
-        <a href="مکتب خصوصی بامیکا" target="_blank">مکتب خصوصی بامیکا</a>
+        <i class="fab fa-telegram"></i>
+        کانال تلگرام:
+        <a href="https://t.me/maktabbamika" target="_blank">مکتب خصوصی بامیکا</a>
       </p>
       <p>
-        <i class="fab fa-facebook"></i> صفحه فیسبوک:
-        <a href="مکتب خصوصی بامیکا" target="_blank">مکتب خصوصی بامیکا</a>
+        <i class="fab fa-facebook"></i>
+        صفحه فیسبوک:
+        <a href="https://facebook.com/maktabbamika" target="_blank">مکتب خصوصی بامیکا</a>
       </p>
     </div>
     <select id="userTypeSelect">
@@ -174,7 +155,6 @@
 
   <div class="admin-panel hidden" id="admin-panel">
     <h2>پنل مدیریت</h2>
-
     <h3>افزودن معلم</h3>
     <input type="text" id="teacherUser" placeholder="نام کاربری معلم" />
     <input type="password" id="teacherPass" placeholder="رمز عبور معلم" />
@@ -285,110 +265,83 @@
     }
 
     function updateUser(btn) {
-      const parentDiv = btn.parentElement;
-      const inputs = parentDiv.querySelectorAll('input');
-      const userInput = inputs[0];
-      const passInput = inputs[1];
-      const role = userInput.getAttribute('data-role');
-      const oldUsername = passInput.getAttribute('data-user');
-      const newUsername = userInput.value.trim();
-      const newPass = passInput.value.trim();
+      const container = btn.parentElement;
+      const usernameInput = container.querySelector('input[data-field="user"]');
+      const passwordInput = container.querySelector('input[data-field="pass"]');
+      const role = usernameInput.dataset.role;
+      const oldUsername = passwordInput.dataset.user;
+      const newUsername = usernameInput.value.trim();
+      const newPassword = passwordInput.value.trim();
 
-      if (!newUsername || !newPass) return alert('نام کاربری و رمز نمی‌توان خالی باشد.');
-
-      // حذف نام کاربری قدیمی و اضافه کردن جدید (برای تغییر نام کاربری)
-      if (oldUsername !== newUsername) {
-        if (users[role][newUsername]) return alert('نام کاربری تکراری است.');
-        delete users[role][oldUsername];
-        users[role][newUsername] = newPass;
-      } else {
-        users[role][oldUsername] = newPass;
+      if (!newUsername || !newPassword) {
+        alert('فیلدها نمی‌توانند خالی باشند.');
+        return;
       }
+
+      if (newUsername !== oldUsername) {
+        delete users[role][oldUsername];
+      }
+
+      users[role][newUsername] = newPassword;
       saveData();
-      alert('اطلاعات کاربر بروز شد.');
       showUserLists();
+      alert('کاربر ویرایش شد.');
     }
 
     function submitStudentData() {
-      const name = document.getElementById('studentName').value.trim();
-      const father = document.getElementById('studentFather').value.trim();
-      const grade = document.getElementById('grade').value;
-      const subject = document.getElementById('subject').value.trim();
-      const performance = document.getElementById('performance').value;
-      const note = document.getElementById('extraNote').value.trim();
-      const date = document.getElementById('recordDate').value;
+      const record = {
+        name: document.getElementById('studentName').value.trim(),
+        father: document.getElementById('studentFather').value.trim(),
+        grade: document.getElementById('grade').value,
+        subject: document.getElementById('subject').value.trim(),
+        performance: document.getElementById('performance').value,
+        note: document.getElementById('extraNote').value.trim(),
+        date: document.getElementById('recordDate').value,
+        parent: document.getElementById('studentFather').value.trim(),
+      };
 
-      if (!name || !father || !grade === 'انتخاب صنف' || !subject || !performance || !date) {
-        return alert('لطفاً تمام فیلدها را پر کنید.');
+      if (!record.name || !record.father || !record.grade || !record.subject) {
+        alert('تمام فیلدهای الزامی را پر کنید.');
+        return;
       }
 
-      studentRecords.push({
-        name,
-        father,
-        grade,
-        subject,
-        performance,
-        note,
-        date,
-        teacher: currentUser,
-      });
-      saveData();
-      alert('آمار با موفقیت ثبت شد.');
+      // بررسی تطابق نام پدر با نام والدین ثبت شده
+      if (!users.parent[record.father]) {
+        alert('نام پدر شاگرد با نام کاربری والدین ثبت شده مطابقت ندارد.');
+        return;
+      }
 
-      // پاک کردن فیلدها
-      document.getElementById('studentName').value = '';
-      document.getElementById('studentFather').value = '';
-      document.getElementById('grade').selectedIndex = 0;
-      document.getElementById('subject').value = '';
-      document.getElementById('performance').selectedIndex = 0;
-      document.getElementById('extraNote').value = '';
-      document.getElementById('recordDate').value = '';
+      studentRecords.push(record);
+      saveData();
       showTeacherRecords();
     }
 
     function showTeacherRecords() {
       const div = document.getElementById('teacherRecords');
-      const filtered = studentRecords.filter((rec) => rec.teacher === currentUser);
-      if (filtered.length === 0) {
-        div.innerHTML = '<p>هیچ آمار ثبت شده‌ای وجود ندارد.</p>';
-        return;
-      }
-      div.innerHTML = filtered
-        .map(
-          (r) => `
-        <div class="record">
-          <strong>نام شاگرد:</strong> ${r.name} <br/>
-          <strong>نام پدر:</strong> ${r.father} <br/>
-          <strong>صنف:</strong> ${r.grade} <br/>
-          <strong>مضمون:</strong> ${r.subject} <br/>
-          <strong>عملکرد:</strong> ${r.performance} <br/>
-          <strong>توضیحات اضافی:</strong> ${r.note || '-'} <br/>
-          <strong>تاریخ ثبت:</strong> ${r.date}
-        </div>
-      `
-        )
-        .join('');
+      const names = studentRecords.map((r) => r.name);
+      div.innerHTML =
+        '<h3>شاگردان ثبت شده:</h3>' +
+        [...new Set(names)].map((n) => `<p>👨‍🎓 ${n}</p>`).join('');
     }
 
     function showStudentInfo() {
       const div = document.getElementById('studentInfo');
-      // فرض کنیم نام کاربری والد برابر نام شاگرد است (می‌تونی تغییرش بدی)
-      const records = studentRecords.filter((r) => r.name === currentUser);
+      const records = studentRecords.filter((r) => r.parent === currentUser);
       if (records.length === 0) {
-        div.innerHTML = '<p>هیچ اطلاعاتی یافت نشد.</p>';
+        div.innerHTML = '<p>آمار برای فرزند شما ثبت نشده است.</p>';
         return;
       }
       div.innerHTML = records
         .map(
           (r) => `
         <div class="record">
-          <strong>نام شاگرد:</strong> ${r.name} <br/>
-          <strong>نام پدر:</strong> ${r.father} <br/>
-          <strong>صنف:</strong> ${r.grade} <br/>
-          <strong>مضمون:</strong> ${r.subject} <br/>
-          <strong>عملکرد:</strong> ${r.performance} <br/>
-          <strong>توضیحات اضافی:</strong> ${r.note || '-'} <br/>
-          <strong>تاریخ ثبت:</strong> ${r.date}
+          <p><strong>نام:</strong> ${r.name}</p>
+          <p><strong>نام پدر:</strong> ${r.father}</p>
+          <p><strong>صنف:</strong> ${r.grade}</p>
+          <p><strong>مضمون:</strong> ${r.subject}</p>
+          <p><strong>وضعیت:</strong> ${r.performance}</p>
+          <p><strong>تاریخ:</strong> ${r.date}</p>
+          <p><strong>توضیحات اضافی:</strong> ${r.note}</p>
         </div>
       `
         )
@@ -402,6 +355,8 @@
       document.getElementById('admin-panel').classList.add('hidden');
       document.getElementById('teacher-panel').classList.add('hidden');
       document.getElementById('parent-panel').classList.add('hidden');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
     }
   </script>
 </body>
