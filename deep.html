@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <title>سامانه مدیریت مکتب افغان</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
   <style>
     * {
       font-family: 'Vazirmatn', sans-serif;
     }
     body {
-      background: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')
+        no-repeat center center fixed;
       background-size: cover;
       margin: 0;
       display: flex;
@@ -17,19 +22,26 @@
       align-items: center;
       min-height: 100vh;
     }
-    .container, .admin-panel, .teacher-panel, .parent-panel {
-      background-color: rgba(255,255,255,0.95);
+    .container,
+    .admin-panel,
+    .teacher-panel,
+    .parent-panel {
+      background-color: rgba(255, 255, 255, 0.95);
       border-radius: 15px;
       padding: 30px;
       width: 90%;
       max-width: 600px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       color: #1d3557;
     }
-    input, select, textarea {
+    input,
+    select,
+    textarea {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
@@ -63,11 +75,90 @@
       margin-top: 10px;
       text-align: right;
     }
+    .record input,
+    .record select,
+    .record textarea {
+      width: auto;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .record-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .school-info {
+      margin-top: 20px;
+      text-align: right;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #333;
+    }
+    .school-info i {
+      margin-left: 8px;
+      color: #1d3557;
+    }
+    /* لینک های تلگرام و فیسبوک بدون خط و رنگ تیره */
+    .school-info a {
+      text-decoration: none;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .school-info a:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+    .user-list {
+      text-align: right;
+      margin-top: 20px;
+    }
+    .user-item {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-item input {
+      margin: 0 5px;
+      flex: 1;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 6px;
+    }
+    .user-item button {
+      flex: 0 0 auto;
+      width: auto;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="login-panel">
-    <h1>سامانه مدیریت (نام مکتب)</h1>
+    <h1>سامانه مدیریت مکتب خصوصی بامیکا</h1>
+    <div class="school-info">
+      <p><i class="fas fa-map-marker-alt"></i> آدرس: کابل، دشت برچی، ریگریشن</p>
+      <p><i class="fas fa-phone"></i> شماره تماس: ۰۷۰۰۱۲۳۴۵۶</p>
+      <p><i class="fab fa-whatsapp"></i> واتساپ: ۰۷۰۰۱۲۳۴۵۶</p>
+      <p>
+        <i class="fab fa-telegram"></i>
+        کانال تلگرام:
+        <a href="https://t.me/maktabbamika" target="_blank">مکتب خصوصی بامیکا</a>
+      </p>
+      <p>
+        <i class="fab fa-facebook"></i>
+        صفحه فیسبوک:
+        <a href="https://facebook.com/maktabbamika" target="_blank">مکتب خصوصی بامیکا</a>
+      </p>
+    </div>
     <select id="userTypeSelect">
       <option value="admin">مدیر</option>
       <option value="teacher">معلم</option>
@@ -84,11 +175,13 @@
     <input type="text" id="teacherUser" placeholder="نام کاربری معلم" />
     <input type="password" id="teacherPass" placeholder="رمز عبور معلم" />
     <button onclick="registerSpecificUser('teacher')">ثبت معلم</button>
+    <div id="teacherList" class="user-list"></div>
 
     <h3>افزودن والد</h3>
     <input type="text" id="parentUser" placeholder="نام کاربری والد" />
     <input type="password" id="parentPass" placeholder="رمز عبور والد" />
     <button onclick="registerSpecificUser('parent')">ثبت والد</button>
+    <div id="parentList" class="user-list"></div>
 
     <button onclick="logout()">خروج</button>
   </div>
@@ -99,6 +192,13 @@
     <input type="text" id="studentFather" placeholder="نام پدر شاگرد" />
     <select id="grade">
       <option disabled selected>انتخاب صنف</option>
+      <script>
+        for (let i = 1; i <= 10; i++) {
+          document.write(
+            `<option value="${i}الف">صنف ${i} الف</option><option value="${i}ب">صنف ${i} ب</option>`
+          );
+        }
+      </script>
     </select>
     <input type="text" id="subject" placeholder="مضمون" />
     <select id="performance">
@@ -119,225 +219,267 @@
     <button onclick="logout()">خروج</button>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
   <script>
-    // تنظیمات Firebase خودت را اینجا وارد کن
-    const firebaseConfig = {
-      apiKey: "AIzaSyARB3d-M1k9s-e-kN8WuURFERFHPpkFNHc",
-      authDomain: "school-system-92711.firebaseapp.com",
-      databaseURL: "https://school-system-92711-default-rtdb.firebaseio.com",
-      projectId: "school-system-92711",
-      storageBucket: "school-system-92711.appspot.com",
-      messagingSenderId: "374437671805",
-      appId: "1:374437671805:web:2f34a74fa1b1057df51214",
-      measurementId: "G-LMZT4VGV4W"
+    let users = JSON.parse(localStorage.getItem('users')) || {
+      admin: { مدیر: '1234' },
+      teacher: {},
+      parent: {},
     };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // بارگذاری صنف‌ها در لیست انتخاب صنف
-    const gradeSelect = document.getElementById("grade");
-    for (let i = 1; i <= 10; i++) {
-      gradeSelect.innerHTML += `<option value="${i}الف">صنف ${i} الف</option><option value="${i}ب">صنف ${i} ب</option>`;
-    }
-
+    let studentRecords = JSON.parse(localStorage.getItem('records')) || [];
     let currentUser = null;
     let currentRole = null;
 
-    // بررسی و ایجاد مدیر اولیه در Firebase اگر وجود نداشت
-    function ensureAdminExists() {
-      db.ref("users/admin/مدیر").get().then(snapshot => {
-        if (!snapshot.exists()) {
-          db.ref("users/admin/مدیر").set("1234");
-        }
+    function saveData() {
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('records', JSON.stringify(studentRecords));
+    }
+
+    function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const userType = document.getElementById('userTypeSelect').value;
+      if (users[userType][username] === password) {
+        currentUser = username;
+        currentRole = userType;
+        document.getElementById('login-panel').classList.add('hidden');
+        document.getElementById(`${userType}-panel`).classList.remove('hidden');
+        if (userType === 'parent') showStudentInfo();
+        if (userType === 'teacher') showTeacherRecords();
+        if (userType === 'admin') showUserLists();
+      } else {
+        alert('اطلاعات ورود نادرست است.');
+      }
+    }
+
+    function registerSpecificUser(role) {
+      const username = document.getElementById(`${role}User`).value.trim();
+      const password = document.getElementById(`${role}Pass`).value.trim();
+      if (!username || !password) return alert('تمام فیلدها الزامی است.');
+      users[role][username] = password;
+      saveData();
+      document.getElementById(`${role}User`).value = '';
+      document.getElementById(`${role}Pass`).value = '';
+      alert('کاربر با موفقیت ثبت شد.');
+      showUserLists();
+    }
+
+    function showUserLists() {
+      ['teacher', 'parent'].forEach((role) => {
+        const div = document.getElementById(role + 'List');
+        div.innerHTML = Object.entries(users[role])
+          .map(
+            ([user, pass]) => `
+          <div class="user-item">
+            <input value="${user}" data-role="${role}" data-field="user" />
+            <input value="${pass}" data-role="${role}" data-user="${user}" data-field="pass" />
+            <button onclick="updateUser(this)">ویرایش</button>
+          </div>
+        `
+          )
+          .join('');
       });
     }
 
-    ensureAdminExists();
+    function updateUser(btn) {
+      const container = btn.parentElement;
+      const usernameInput = container.querySelector('input[data-field="user"]');
+      const passwordInput = container.querySelector('input[data-field="pass"]');
+      const role = usernameInput.dataset.role;
+      const oldUsername = passwordInput.dataset.user;
+      const newUsername = usernameInput.value.trim();
+      const newPassword = passwordInput.value.trim();
 
-    async function handleLogin() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const userType = document.getElementById("userTypeSelect").value;
-
-      if (!username || !password) {
-        alert("نام کاربری و رمز عبور را وارد کنید.");
+      if (!newUsername || !newPassword) {
+        alert('فیلدها نمی‌توانند خالی باشند.');
         return;
       }
 
-      try {
-        const snapshot = await db.ref(`users/${userType}/${username}`).get();
-        if (snapshot.exists()) {
-          const storedPassword = snapshot.val();
-          if (storedPassword === password) {
-            currentUser = username;
-            currentRole = userType;
-            document.getElementById("login-panel").classList.add("hidden");
-            document.getElementById(`${userType}-panel`).classList.remove("hidden");
-
-            if (userType === "parent") {
-              showStudentInfo();
-            }
-            if (userType === "teacher") {
-              showTeacherRecords();
-            }
-
-            document.getElementById("username").value = "";
-            document.getElementById("password").value = "";
-          } else {
-            alert("رمز عبور نادرست است.");
-          }
-        } else {
-          alert("نام کاربری موجود نیست.");
-        }
-      } catch (error) {
-        alert("خطا در اتصال به دیتابیس.");
-        console.error(error);
+      if (newUsername !== oldUsername) {
+        delete users[role][oldUsername];
       }
+
+      users[role][newUsername] = newPassword;
+      saveData();
+      showUserLists();
+      alert('کاربر ویرایش شد.');
     }
 
-    async function registerSpecificUser(role) {
-      const username = document.getElementById(`${role}User`).value.trim();
-      const password = document.getElementById(`${role}Pass`).value.trim();
-
-      if (!username || !password) {
-        alert("تمام فیلدها الزامی است.");
-        return;
-      }
-
-      try {
-        const snapshot = await db.ref(`users/${role}/${username}`).get();
-        if (snapshot.exists()) {
-          alert("این نام کاربری قبلا ثبت شده است.");
-          return;
-        }
-        await db.ref(`users/${role}/${username}`).set(password);
-        alert("کاربر با موفقیت ثبت شد.");
-        document.getElementById(`${role}User`).value = "";
-        document.getElementById(`${role}Pass`).value = "";
-      } catch (error) {
-        alert("خطا در ثبت کاربر.");
-        console.error(error);
-      }
-    }
-
-    async function submitStudentData() {
+    function submitStudentData() {
       const record = {
-        name: document.getElementById("studentName").value.trim(),
-        father: document.getElementById("studentFather").value.trim(),
-        grade: document.getElementById("grade").value,
-        subject: document.getElementById("subject").value.trim(),
-        performance: document.getElementById("performance").value,
-        note: document.getElementById("extraNote").value.trim(),
-        date: document.getElementById("recordDate").value,
-        parent: document.getElementById("studentFather").value.trim()
+        name: document.getElementById('studentName').value.trim(),
+        father: document.getElementById('studentFather').value.trim(),
+        grade: document.getElementById('grade').value,
+        subject: document.getElementById('subject').value.trim(),
+        performance: document.getElementById('performance').value,
+        note: document.getElementById('extraNote').value.trim(),
+        date: document.getElementById('recordDate').value,
+        parent: document.getElementById('studentFather').value.trim(),
       };
 
-      if (!record.name || !record.father || !record.grade || !record.subject || !record.date) {
-        alert("تمام فیلدهای الزامی را پر کنید.");
+      if (!record.name || !record.father || !record.grade || !record.subject) {
+        alert('تمام فیلدهای الزامی را پر کنید.');
         return;
       }
 
-      try {
-        // گرفتن آیدی جدید برای رکورد
-        const newRecordRef = db.ref("records").push();
-        await newRecordRef.set(record);
+      // بررسی تطابق نام پدر با نام والدین ثبت شده
+      if (!users.parent[record.father]) {
+        alert('نام پدر شاگرد با نام کاربری والدین ثبت شده مطابقت ندارد.');
+        return;
+      }
 
-        alert("آمار با موفقیت ثبت شد.");
+      studentRecords.push(record);
+      saveData();
+      showTeacherRecords();
+      clearTeacherInputs();
+    }
 
+    function clearTeacherInputs() {
+      document.getElementById('studentName').value = '';
+      document.getElementById('studentFather').value = '';
+      document.getElementById('grade').selectedIndex = 0;
+      document.getElementById('subject').value = '';
+      document.getElementById('performance').selectedIndex = 0;
+      document.getElementById('extraNote').value = '';
+      document.getElementById('recordDate').value = '';
+    }
+
+    function showTeacherRecords() {
+      const div = document.getElementById('teacherRecords');
+      if (studentRecords.length === 0) {
+        div.innerHTML = '<p>هیچ آمار ثبت شده‌ای وجود ندارد.</p>';
+        return;
+      }
+
+      div.innerHTML = '<h3>آمار ثبت شده شاگردان:</h3>';
+
+      studentRecords.forEach((rec, index) => {
+        div.innerHTML += `
+          <div class="record" data-index="${index}">
+            <label>نام شاگرد:<input type="text" value="${rec.name}" class="edit-name" /></label><br/>
+            <label>نام پدر:<input type="text" value="${rec.father}" class="edit-father" /></label><br/>
+            <label>صنف:
+              <select class="edit-grade">
+                ${generateGradeOptions(rec.grade)}
+              </select>
+            </label><br/>
+            <label>مضمون:<input type="text" value="${rec.subject}" class="edit-subject" /></label><br/>
+            <label>وضعیت:
+              <select class="edit-performance">
+                <option value="عالی" ${rec.performance === 'عالی' ? 'selected' : ''}>عالی</option>
+                <option value="متوسط" ${rec.performance === 'متوسط' ? 'selected' : ''}>متوسط</option>
+                <option value="ضعیف" ${rec.performance === 'ضعیف' ? 'selected' : ''}>ضعیف</option>
+              </select>
+            </label><br/>
+            <label>توضیحات اضافی:<textarea class="edit-note">${rec.note}</textarea></label><br/>
+            <label>تاریخ:<input type="date" value="${rec.date}" class="edit-date" /></label>
+            <div class="record-buttons">
+              <button onclick="saveRecord(${index})">ذخیره</button>
+              <button onclick="deleteRecord(${index})" style="background-color:#e74c3c;">حذف</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function generateGradeOptions(selected) {
+      let options = '';
+      for (let i = 1; i <= 10; i++) {
+        ['الف', 'ب'].forEach((suffix) => {
+          const val = `${i}${suffix}`;
+          options += `<option value="${val}" ${val === selected ? 'selected' : ''}>صنف ${val}</option>`;
+        });
+      }
+      return options;
+    }
+
+    function saveRecord(index) {
+      const recordDiv = document.querySelector(`.record[data-index="${index}"]`);
+      const name = recordDiv.querySelector('.edit-name').value.trim();
+      const father = recordDiv.querySelector('.edit-father').value.trim();
+      const grade = recordDiv.querySelector('.edit-grade').value;
+      const subject = recordDiv.querySelector('.edit-subject').value.trim();
+      const performance = recordDiv.querySelector('.edit-performance').value;
+      const note = recordDiv.querySelector('.edit-note').value.trim();
+      const date = recordDiv.querySelector('.edit-date').value;
+
+      if (!name || !father || !grade || !subject) {
+        alert('لطفاً تمام فیلدهای الزامی را پر کنید.');
+        return;
+      }
+      // بررسی تطابق نام پدر با والدین ثبت شده
+      if (!users.parent[father]) {
+        alert('نام پدر شاگرد با نام کاربری والدین ثبت شده مطابقت ندارد.');
+        return;
+      }
+
+      studentRecords[index] = {
+        name,
+        father,
+        grade,
+        subject,
+        performance,
+        note,
+        date,
+        parent: father,
+      };
+
+      saveData();
+      alert('رکورد با موفقیت ذخیره شد.');
+      showTeacherRecords();
+    }
+
+    function deleteRecord(index) {
+      if (confirm('آیا از حذف این رکورد اطمینان دارید؟')) {
+        studentRecords.splice(index, 1);
+        saveData();
         showTeacherRecords();
-
-        // پاک کردن فرم
-        document.getElementById("studentName").value = "";
-        document.getElementById("studentFather").value = "";
-        document.getElementById("grade").selectedIndex = 0;
-        document.getElementById("subject").value = "";
-        document.getElementById("performance").value = "عالی";
-        document.getElementById("extraNote").value = "";
-        document.getElementById("recordDate").value = "";
-      } catch (error) {
-        alert("خطا در ثبت آمار.");
-        console.error(error);
       }
     }
 
-    async function showTeacherRecords() {
-      const div = document.getElementById("teacherRecords");
-      div.innerHTML = "<h3>شاگردان ثبت شده:</h3>";
-
-      try {
-        const snapshot = await db.ref("records").get();
-        if (snapshot.exists()) {
-          const records = snapshot.val();
-          // استخراج نام‌ها بدون تکرار
-          const names = [];
-          for (const key in records) {
-            if (!names.includes(records[key].name)) {
-              names.push(records[key].name);
-            }
-          }
-          names.forEach(name => {
-            div.innerHTML += `<p>👨‍🎓 ${name}</p>`;
-          });
-        } else {
-          div.innerHTML += "<p>هیچ رکوردی ثبت نشده است.</p>";
-        }
-      } catch (error) {
-        div.innerHTML += "<p>خطا در دریافت داده‌ها.</p>";
-        console.error(error);
+    function showStudentInfo() {
+      const div = document.getElementById('studentInfo');
+      const records = studentRecords.filter(r => r.parent === currentUser);
+      if (records.length === 0) {
+        div.innerHTML = '<p>هیچ آمار شاگرد ثبت نشده است.</p>';
+        return;
       }
-    }
-
-    async function showStudentInfo() {
-      const div = document.getElementById("studentInfo");
-      div.innerHTML = "";
-
-      try {
-        const snapshot = await db.ref("records").get();
-        if (snapshot.exists()) {
-          const records = snapshot.val();
-          // فیلتر کردن رکوردها برای والد فعلی
-          const parentRecords = Object.values(records).filter(r => r.parent === currentUser);
-
-          if (parentRecords.length === 0) {
-            div.innerHTML = "<p>آمار برای فرزند شما ثبت نشده است.</p>";
-            return;
-          }
-
-          parentRecords.forEach(r => {
-            div.innerHTML += `
-              <div class="record">
-                <p><strong>نام:</strong> ${r.name}</p>
-                <p><strong>نام پدر:</strong> ${r.father}</p>
-                <p><strong>صنف:</strong> ${r.grade}</p>
-                <p><strong>مضمون:</strong> ${r.subject}</p>
-                <p><strong>وضعیت:</strong> ${r.performance}</p>
-                <p><strong>تاریخ:</strong> ${r.date}</p>
-                <p><strong>توضیحات:</strong> ${r.note}</p>
-              </div>
-            `;
-          });
-        } else {
-          div.innerHTML = "<p>آمار برای فرزند شما ثبت نشده است.</p>";
-        }
-      } catch (error) {
-        div.innerHTML = "<p>خطا در دریافت داده‌ها.</p>";
-        console.error(error);
-      }
+      div.innerHTML = '<h3>آمار شاگرد شما:</h3>';
+      records.forEach(rec => {
+        div.innerHTML += `
+          <div class="record">
+            <p><strong>نام شاگرد:</strong> ${rec.name}</p>
+            <p><strong>صنف:</strong> ${rec.grade}</p>
+            <p><strong>مضمون:</strong> ${rec.subject}</p>
+            <p><strong>وضعیت:</strong> ${rec.performance}</p>
+            <p><strong>توضیحات اضافی:</strong> ${rec.note}</p>
+            <p><strong>تاریخ:</strong> ${rec.date}</p>
+          </div>
+        `;
+      });
     }
 
     function logout() {
-      ["admin-panel", "teacher-panel", "parent-panel"].forEach(p =>
-        document.getElementById(p).classList.add("hidden")
-      );
-      document.getElementById("login-panel").classList.remove("hidden");
       currentUser = null;
       currentRole = null;
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
+      document.getElementById('login-panel').classList.remove('hidden');
+      ['admin', 'teacher', 'parent'].forEach(role => {
+        document.getElementById(`${role}-panel`).classList.add('hidden');
+      });
+      clearInputs();
+    }
+
+    function clearInputs() {
+      ['username', 'password', 'teacherUser', 'teacherPass', 'parentUser', 'parentPass',
+        'studentName', 'studentFather', 'grade', 'subject', 'extraNote', 'recordDate'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (el.tagName === 'SELECT') {
+            el.selectedIndex = 0;
+          } else {
+            el.value = '';
+          }
+        }
+      });
     }
   </script>
 </body>
